@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Internet Time Machine — Digital Archaeology & History Explorer</title>
+  <meta name="description" content="Explore website evolution through decades of Wayback Machine archives. Interactive timeline scrubber, side-by-side comparison, and structural complexity diffs.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/styles/main.css">
+  <link rel="stylesheet" href="/src/styles/components.css">
+  <link rel="stylesheet" href="/src/styles/comparison.css">
+</head>
+<body class="theme-cosmic">
+  <div id="app" class="app-container">
+    
+    <!-- HEADER -->
+    <header class="navbar-glass">
+      <div class="brand-group">
+        <div class="brand-icon-wrapper">
+          <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+            <path d="M4 12a8 8 0 0 1 8-8"></path>
+          </svg>
+          <div class="pulse-ring"></div>
+        </div>
+        <div>
+          <h1 class="brand-title">Internet Time Machine</h1>
+          <span class="brand-subtitle">Digital Archaeology & Web Evolution</span>
+        </div>
+      </div>
+
+      <!-- VIEW MODE SWITCHER -->
+      <nav class="view-mode-tabs" id="viewModeTabs">
+        <button class="mode-tab active" data-mode="single" id="modeSingleBtn">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+          Single Explorer
+        </button>
+        <button class="mode-tab" data-mode="compare" id="modeCompareBtn">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="12" y1="3" x2="12" y2="21"></line>
+          </svg>
+          Side-by-Side Compare
+        </button>
+      </nav>
+
+      <!-- SYSTEM STATUS BADGE -->
+      <div class="status-indicator-badge" id="systemStatusBadge">
+        <span class="status-dot"></span>
+        <span class="status-text" id="statusText">Ready</span>
+      </div>
+    </header>
+
+    <!-- SEARCH HERO BAR -->
+    <section class="search-section">
+      <form class="search-bar-glass" id="searchForm">
+        <div class="input-icon-wrapper">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </div>
+        <input 
+          type="text" 
+          id="urlInput" 
+          class="url-input" 
+          placeholder="Enter any domain (e.g. apple.com, google.com, bbc.co.uk)..." 
+          autocomplete="off"
+          spellcheck="false"
+          value="apple.com"
+          required
+        >
+        <button type="button" class="btn-clear" id="btnClearUrl" title="Clear input" style="display:none;">&times;</button>
+        <button type="submit" class="btn-glow-travel" id="btnSearch">
+          <span class="btn-text">Travel Through Time</span>
+          <span class="spinner" id="searchSpinner" style="display:none;"></span>
+        </button>
+      </form>
+
+      <!-- PRESET CHIPS -->
+      <div class="preset-chips-container">
+        <span class="preset-label">Time Capsules:</span>
+        <div class="preset-chips">
+          <button type="button" class="preset-chip" data-url="apple.com" data-year="1997">
+             Apple (1997)
+          </button>
+          <button type="button" class="preset-chip" data-url="google.com" data-year="1998">
+            🔍 Google (1998)
+          </button>
+          <button type="button" class="preset-chip" data-url="amazon.com" data-year="1999">
+            📦 Amazon (1999)
+          </button>
+          <button type="button" class="preset-chip" data-url="spacejam.com" data-year="1996">
+            🏀 Space Jam (1996)
+          </button>
+          <button type="button" class="preset-chip" data-url="yahoo.com" data-year="1996">
+            👾 Yahoo! (1996)
+          </button>
+          <button type="button" class="preset-chip" data-url="wikipedia.org" data-year="2001">
+            📖 Wikipedia (2001)
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE TIMELINE STRIP -->
+    <section class="timeline-section-glass" id="timelineSection" style="display:none;">
+      <div class="timeline-header">
+        <div class="timeline-info">
+          <span class="current-site-tag" id="currentSiteTag">apple.com</span>
+          <span class="archive-span-pill" id="archiveSpanPill">1996 — Present</span>
+          <span class="total-captures-pill" id="totalCapturesPill">0 captures</span>
+        </div>
+        <div class="timeline-quick-jumps">
+          <button class="jump-btn" id="btnJumpFirst" title="First recorded snapshot">⏮ First Era</button>
+          <button class="jump-btn" id="btnJumpMid" title="Mid-point in history">⏵ Mid Era</button>
+          <button class="jump-btn" id="btnJumpLatest" title="Most recent snapshot">⏭ Latest</button>
+          <button class="jump-btn" id="btnJumpRandom" title="Surprise me with a random year">🎲 Random</button>
+        </div>
+      </div>
+
+      <!-- DENSITY VISUALIZER & DRAGGABLE TRACK -->
+      <div class="timeline-track-container">
+        <!-- Bars representing capture frequency per year -->
+        <div class="density-bars" id="densityBars"></div>
+        
+        <!-- Draggable scrubber track -->
+        <div class="slider-wrapper">
+          <input type="range" class="timeline-slider" id="yearSlider" min="1996" max="2026" step="1" value="1997">
+          <div class="active-year-bubble" id="activeYearBubble">1997</div>
+        </div>
+
+        <!-- Year Tick Labels -->
+        <div class="year-ticks" id="yearTicks"></div>
+      </div>
+
+      <!-- SPECIFIC CAPTURES DROPDOWN BAR -->
+      <div class="sub-timeline-bar">
+        <div class="capture-selector-group">
+          <label for="captureSelect">Archive Date in <strong id="selectedYearLabel">1997</strong>:</label>
+          <select id="captureSelect" class="capture-dropdown"></select>
+        </div>
+        <div class="timeline-meta-hint" id="timelineMetaHint">
+          Drag slider or click any year bar to warp through eras
+        </div>
+      </div>
+    </section>
+
+    <!-- MAIN VIEWPORT AREA -->
+    <main class="main-content-area" id="mainContentArea">
+      
+      <!-- WELCOME / INITIAL STATE -->
+      <div class="empty-state-card" id="welcomeState">
+        <div class="portal-rings">
+          <div class="ring ring-1"></div>
+          <div class="ring ring-2"></div>
+          <div class="ring ring-3"></div>
+          <div class="portal-core">🕰️</div>
+        </div>
+        <h2>Ready for Web Archaeology</h2>
+        <p>Enter any URL or select a nostalgic time capsule above to explore how the website transformed across decades.</p>
+      </div>
+
+      <!-- LOADING STATE -->
+      <div class="loading-state-card" id="loadingState" style="display:none;">
+        <div class="radar-scan"></div>
+        <h3>Tuning Into Wayback Archive...</h3>
+        <p id="loadingStatusText">Querying historical CDX catalog</p>
+      </div>
+
+      <!-- ERROR / EMPTY STATE -->
+      <div class="empty-state-card error-card" id="errorState" style="display:none;">
+        <div class="error-glyph">⚠️</div>
+        <h3 id="errorTitle">No Archives Found</h3>
+        <p id="errorMessage">This site hasn't been captured in the Wayback Machine or has restricted access.</p>
+        <button class="btn-retry" id="btnErrorRetry">Try Another Website</button>
+      </div>
+
+      <!-- SINGLE SNAPSHOT VIEWER -->
+      <div class="viewer-container" id="singleViewerContainer" style="display:none;">
+        <!-- VIEWER CONTROL BAR -->
+        <div class="viewer-controls-glass">
+          <div class="viewer-left-controls">
+            <span class="active-badge-year" id="singleViewerYear">1997</span>
+            <span class="active-badge-timestamp" id="singleViewerTimestamp">1997-04-12 10:20:15</span>
+            <a href="#" target="_blank" rel="noopener noreferrer" class="archive-ext-link" id="singleArchiveLink" title="Open directly on archive.org">
+              Open on Wayback
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+          </div>
+          <div class="viewer-right-controls">
+            <button class="icon-tool-btn" id="btnReloadSingle" title="Reload iframe">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+              </svg>
+            </button>
+            <button class="icon-tool-btn" id="btnFullscreenSingle" title="Fullscreen view">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <polyline points="9 21 3 21 3 15"></polyline>
+                <line x1="21" y1="3" x2="14" y2="10"></line>
+                <line x1="3" y1="21" x2="10" y2="14"></line>
+              </svg>
+            </button>
+            <button class="btn-action-compare" id="btnSwitchToCompare">
+              Compare with Another Year ⇄
+            </button>
+          </div>
+        </div>
+
+        <!-- IFRAME STAGE -->
+        <div class="iframe-wrapper" id="singleIframeWrapper">
+          <iframe id="singleIframe" sandbox="allow-scripts allow-same-origin allow-popups" loading="lazy"></iframe>
+        </div>
+
+        <!-- SNAPSHOT METADATA SUMMARY BAR -->
+        <div class="metadata-card-glass" id="singleMetadataCard">
+          <div class="metadata-item">
+            <span class="meta-label">HTML Payload</span>
+            <span class="meta-val" id="metaHtmlSize">—</span>
+          </div>
+          <div class="metadata-item">
+            <span class="meta-label">DOM Complexity</span>
+            <span class="meta-val" id="metaDomNodes">—</span>
+          </div>
+          <div class="metadata-item">
+            <span class="meta-label">Image Assets</span>
+            <span class="meta-val" id="metaImages">—</span>
+          </div>
+          <div class="metadata-item">
+            <span class="meta-label">External Resources</span>
+            <span class="meta-val" id="metaResources">—</span>
+          </div>
+          <div class="metadata-item">
+            <span class="meta-label">Mobile Viewport</span>
+            <span class="meta-val" id="metaMobileStatus">—</span>
+          </div>
+          <div class="metadata-item frameworks-meta-item">
+            <span class="meta-label">Tech Signals & Layout</span>
+            <div class="meta-tags-list" id="metaFrameworkTags"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIDE-BY-SIDE COMPARE VIEWER -->
+      <div class="compare-container" id="compareViewerContainer" style="display:none;">
+        
+        <!-- COMPARISON TOOLBAR -->
+        <div class="compare-toolbar-glass">
+          <div class="compare-col-header left-era">
+            <div class="era-tag">ERA A</div>
+            <select id="compareYearSelectA" class="compare-year-dropdown"></select>
+            <select id="compareCaptureSelectA" class="compare-capture-dropdown"></select>
+          </div>
+
+          <div class="compare-center-actions">
+            <button class="toggle-btn active" id="btnSyncScroll" title="Attempt synchronized scroll">
+              <span class="sync-icon">🔗</span> Sync Scroll
+            </button>
+            <button class="btn-diff-drawer" id="btnToggleDiffDrawer">
+              📊 Structural Diff
+            </button>
+          </div>
+
+          <div class="compare-col-header right-era">
+            <div class="era-tag">ERA B</div>
+            <select id="compareYearSelectB" class="compare-year-dropdown"></select>
+            <select id="compareCaptureSelectB" class="compare-capture-dropdown"></select>
+          </div>
+        </div>
+
+        <!-- SPLIT IFRAME VIEWPORTS -->
+        <div class="split-viewports-wrapper" id="splitViewportsWrapper">
+          <div class="viewport-pane pane-a" id="paneA">
+            <div class="pane-banner" id="paneBannerA">1997 Snapshot</div>
+            <iframe id="compareIframeA" sandbox="allow-scripts allow-same-origin allow-popups" loading="lazy"></iframe>
+          </div>
+
+          <div class="viewport-divider" id="viewportDivider"></div>
+
+          <div class="viewport-pane pane-b" id="paneB">
+            <div class="pane-banner" id="paneBannerB">2020 Snapshot</div>
+            <iframe id="compareIframeB" sandbox="allow-scripts allow-same-origin allow-popups" loading="lazy"></iframe>
+          </div>
+        </div>
+
+        <!-- STRUCTURAL METADATA DIFF DRAWER -->
+        <div class="diff-drawer-glass open" id="diffDrawer">
+          <div class="diff-drawer-header">
+            <h4>Structural & Complexity Evolution</h4>
+            <span class="diff-tag-era" id="diffErasLabel">1997 vs 2020</span>
+            <button class="btn-close-drawer" id="btnCloseDiffDrawer">&times;</button>
+          </div>
+          
+          <div class="diff-stats-grid" id="diffStatsGrid">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="app-footer-glass">
+      <span>Internet Time Machine &bull; Powered by Wayback Machine & CDX API &bull; SQLite Caching</span>
+    </footer>
+
+  </div>
+
+  <script type="module" src="/src/app.js"></script>
+</body>
+</html>
